@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Alert, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PlanAhorrosScreen from './PlanAhorrosScreen';
 import ChatScreen from './ChatScreen';
+import GastosScreen from './GastosScreen';
+import GastosScreenWeb from './GastosScreenWeb';
 
 const STORAGE_KEY = '@presupuesto_mensual';
 
@@ -12,6 +14,7 @@ export default function App() {
   const [guardado, setGuardado] = useState(false);
   const [mostrarPlanAhorros, setMostrarPlanAhorros] = useState(false);
   const [mostrarChat, setMostrarChat] = useState(false);
+  const [mostrarGastos, setMostrarGastos] = useState(false);
 
   // Cargar datos al iniciar la app
   useEffect(() => {
@@ -55,6 +58,13 @@ export default function App() {
   };
 
   const disponible = calcularDisponible();
+
+  // Si está en la pantalla de gastos, mostrarla
+  if (mostrarGastos) {
+    // Usar versión web o móvil según la plataforma
+    const GastosComponent = Platform.OS === 'web' ? GastosScreenWeb : GastosScreen;
+    return <GastosComponent onVolver={() => setMostrarGastos(false)} />;
+  }
 
   // Si está en el chat, mostrarlo
   if (mostrarChat) {
@@ -158,6 +168,14 @@ export default function App() {
             </TouchableOpacity>
           </>
         )}
+
+        {/* Botón de análisis de gastos (siempre visible) */}
+        <TouchableOpacity 
+          style={styles.gastosButton}
+          onPress={() => setMostrarGastos(true)}
+        >
+          <Text style={styles.gastosButtonText}>📊 Analizar Gastos con Excel →</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -298,6 +316,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   chatButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  gastosButton: {
+    backgroundColor: '#f59e0b',
+    paddingVertical: 14,
+    borderRadius: 8,
+    marginTop: 12,
+    alignItems: 'center',
+  },
+  gastosButtonText: {
     color: '#ffffff',
     fontSize: 16,
     fontWeight: '600',

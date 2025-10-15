@@ -56,3 +56,9 @@ coverage/
 # Build outputs
 build/
 dist/
+
+# Test files and examples
+test-data.xlsx
+gastos-ejemplo.xlsx
+*.xlsx
+*.xls
